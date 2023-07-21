@@ -63,7 +63,7 @@ def speechbot ():
         voice = Voices.from_api() [1],
         
     )
-    save (audio, 'api/static/audio.wav')
+    save (audio, 'static/audio.wav')
     
 
 
@@ -146,7 +146,7 @@ def hostfirst():
 
 @app.route('/host')
 def host():
-    audio_filename = 'api/static/audio.wav'
+    audio_filename = 'static/audio.wav'
 
     # Read the binary contents of the .wav file
     with open(audio_filename, 'rb') as audio_file:
