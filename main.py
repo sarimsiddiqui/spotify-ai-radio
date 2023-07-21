@@ -1,6 +1,5 @@
 import os
 import openai
-import reactpy
 from dotenv.main import load_dotenv
 from elevenlabs import generate, play, set_api_key, Accent, VoiceDesign, Gender, Age, save, Voices, Voice
 from flask import Flask, request, url_for, session, redirect, render_template, request, send_file, make_response
@@ -10,10 +9,22 @@ import time
 from queue import Queue
 import base64
 
+
 load_dotenv()
 key = os.environ['API_KEY']
 openai.api_key = key
 set_api_key(os.environ['API_KEY_11'])
+
+app = Flask(__name__)
+
+
+app.secret_key = os.environ['APP_SECRET_KEY']
+app.config['SESSION_COOKIE_NAME'] = 'Radio Show Cookie'
+TOKEN_INFO = "token_info"
+
+@app.route('/', methods = ['POST', 'GET'])
+def home():
+    return render_template("home.html")
 
 #instrucitons to AI
 instructions  = 'You are a radio show host. You have lots of energy and a playful mood.\
@@ -94,16 +105,7 @@ def queue(songs):
     return redirect(url_for('host', _external = True))
 
 
-app = Flask(__name__)
 
-
-app.secret_key = os.environ['APP_SECRET_KEY']
-app.config['SESSION_COOKIE_NAME'] = 'Radio Show Cookie'
-TOKEN_INFO = "token_info"
-
-@app.route('/', methods = ['POST', 'GET'])
-def home():
-    return render_template("home.html")
 
 
 @app.route ('/hostfirst', methods = ['GET', 'POST'])
@@ -118,7 +120,6 @@ def hostfirst():
             messages=messages)
         reply = response["choices"][0]["message"]["content"]
         messages.append({"role": "assistant", "content": reply})
-        print (reply)
 
         # get substring of message before array of songs and print
         try:
