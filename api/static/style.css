@@ -1,0 +1,146 @@
+*,
+*:before,
+*:after {
+    padding: 0;
+    margin: 0;
+    box-sizing:border-box;
+}
+body {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+	height: 100vh;
+    color:white;
+    font-family: "Poppins", sans-serif;
+}
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+.popup{
+    background-color: #ffffff;
+    color:black;
+    width:50vw;
+    padding: 30px 40px;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    left: 50%;
+    top: 50%;
+    border-radius: 8px;
+    box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+    
+}
+.popup button {
+    display:block;
+    margin: 0 0 20px auto;
+    background-color: transparent;
+    font-size: 30px;
+    color: #c5c5c5;
+    border:none;
+    outline: none;
+    cursor:pointer;
+}
+.popup p{
+    font-size: 14px;
+    text-align: justify;
+    margin:20px 0;
+}
+.audio {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    display: none;
+}
+.form {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 70%;
+    display: none;
+}
+.intro {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    text-align: center;
+}
+.submit {
+    position:absolute;
+    transform: translate(-50%, 20%);
+    left: 35%;
+    top: 95%;
+    border-radius: 25px;
+    background-color: white;
+    padding: 15px;
+    min-height: 30px;
+    min-width: 120px;
+    border: none;
+    font-family: "Poppins", sans-serif;
+    color: black;
+}
+.submit2 {
+    position:absolute;
+    transform: translate(-50%, 20%);
+    left: 65%;
+    top: 95%;
+    border-radius: 25px;
+    background-color: white;
+    padding: 15px;
+    min-height: 30px;
+    min-width: 120px;
+    border: none;
+    font-family: "Poppins", sans-serif;
+    color: black;
+}
+.submit:hover {
+    background-color: black;
+    color: white;
+    transition: 0.7s;
+}
+.submit2:hover {
+    background-color: black;
+    color: white;
+    transition: 0.7s;
+}
+.submit3 {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 70%;
+    border-radius: 25px;
+    display: none;
+    background-color: white;
+    padding: 15px;
+    min-height: 30px;
+    min-width: 120px;
+    border: none;
+    font-family: "Poppins", sans-serif;
+    color: black;
+}
+.submit3:hover {
+    background-color: black;
+    color: white;
+    transition: 0.7s;
+}
+.f {
+    background-color: white;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 40%;
+    box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+    padding:10px;
+    border-radius:10px;
+    border: none;
+    font-family: "Poppins", sans-serif;
+    display: none;
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ai Radio Show Host</title>
+    <link rel = "stylesheet" href = "{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="popup">
+        <button id="close">&times;</button>
+        <h1> Before You Continue!</h1>
+        <p>
+            Make sure you do the following:
+        </p>
+        <ol>
+            1. Open Spotify on your device you want to listen music with.
+        </ol>
+        <ol>
+            2. Press the play button to play any song, then pause it so then it activates your device
+        </ol>
+        <ol>
+            3. Enjoy the queue! When it is done, press continue to move forward!
+        </ol>
+        <h3> <bold> CLICK SUBMIT ONCE AND WAIT FOR THE PAGE TO BE REDIRECTED WHILE WE SEARCH FOR YOUR MUSIC!</bold></h3>
+    </div>
+    <audio class = "audio" id = "a" controls src = "{{url_for('static', filename='audio.wav')}}"> </audio>
+    
+    
+    <form class = "f" method = "POST">
+        <input name = "text">
+        <input type = "submit">
+    </form>
+    
+
+    <script src = "{{url_for('static', filename='sscript.js')}}"></script>
+    
+
+
+</body>
+</html>
