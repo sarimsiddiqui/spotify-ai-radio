@@ -22,8 +22,9 @@ app.secret_key = os.environ['APP_SECRET_KEY']
 app.config['SESSION_COOKIE_NAME'] = 'Radio Show Cookie'
 TOKEN_INFO = "token_info"
 
-@app.route('/', methods = ['POST', 'GET'])
+@app.route('/')
 def home():
+    initial()
     return render_template("home.html")
 
 #instrucitons to AI
@@ -31,21 +32,17 @@ instructions  = 'You are a radio show host. You have lots of energy and a playfu
 Your name is Sar. You will ask the user for their music interests, genres, \
 artists, songs, and more. From this, you will provide them with a formatted \
 response of an array of song titles seperated by commas that contains 20 song \
-titles with all 20 songs sorrounded by brackets. For example, three of the twenty songs you would output \
-, \"[Jorja+Interlude, Do+Not+Disturb, Star67]\" in that same format. Notice how song titles that have multiple words are seperated by a \"+\" sign. Before providing these songs, create \
+titles with all 20 songs sorrounded by brackets. Song titles that have multiple words are seperated by a \"+\" sign. Before providing these songs, create \
 a good transition into the first song on the list. Be sure generate twenty songs, nothing more and nothing less. Make sure to never leave any cues. \
 If the user does not give a response, ask again. Also make sure to never mention anything about creating 20 songs, just give a little intro \
-to the first song. For example if the user provides the input of Drake and Travis Scott, you could say something like, "Ooh, I love me some rap music! \
+to the first song. KEEP RESPONSES SIMPLE AND SHORT. For example if the user provides the input of Drake and Travis Scott, you could say something like, "Ooh, I love me some rap music! \
 Drake and Travis Scott are definitely some of my favorites. In fact, I got a whole playlist \
 of rap songs that are sure to get you pumped up. Let me give you a little taste of what is in \
 store for you with the first song on the list, Jorja Interlude by Drake". Only provide the array \
 of songs once in your response. Assume that the 20 songs you provide are all played after being \
 provided. After you provide these songs, you will return to the user with a nice message, maybe \
 something about the last song on the list, and then once again ask for their song choices. Do not \
-ask about anything else. You continue to repeat this process. If the user asks you any questions, \
-you reply by saying that you are a radio show host and cannot answer questions. If you do not understand \
-what the music interest is of the user, ask them again. Do not mention anything about having twenty songs \
-on the list. Be entertaining! Do not ever mention that you are producing an automated response. Do not \
+ask about anything else. You continue to repeat this process. If you do not understand, ask them again. Be entertaining! Do not ever mention that you are producing an automated response. Do not \
 ever mention that you are generating a list of 20 songs. An example of what your response should be formatted like \
 after the user provides their input would be like this, for example, the user provides Travis scott here is an example of what you would say, including four of the 20 songs you are required to provide:  \"Thanks for your input! I love Travis Scott too, here are a few \
 songs that you will enjoy. \n [Highest+in+the+Room, Trance, SICKO+MODE, goosebumps, ...] \n I hope you are enjoying so far! Travis Scott definetly has a different \
@@ -63,6 +60,8 @@ def songarray (reply):
 
 
 q = Queue()
+messages = []
+
 # takes in the text and turns it into speech
 def speechbot ():
     #try:
@@ -76,20 +75,15 @@ def speechbot ():
     )
     save (audio, 'static/audio.wav')
     
-
-
-messages = []
-messages.append({"role": "system", "content": instructions})
-
-
-response = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    messages=messages)
-reply = response["choices"][0]["message"]["content"]
-messages.append({"role": "assistant", "content": reply})
-
-q.put(reply)
-speechbot()
+def initial():
+    messages.append({"role": "system", "content": instructions})
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages)
+    reply = response["choices"][0]["message"]["content"]
+    messages.append({"role": "assistant", "content": reply})
+    q.put(reply)
+    speechbot()
 
 def queue(songs):
     try:
@@ -116,8 +110,10 @@ def hostfirst():
         message = processed_text
         messages.append({"role": "user", "content": message})
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=messages)
+            model="gpt-3.5-turbo"
+            ,
+            messages=messages,
+            )
         reply = response["choices"][0]["message"]["content"]
         messages.append({"role": "assistant", "content": reply})
 
@@ -210,3 +206,5 @@ def create_oath():
     )
 
 app.run()
+
+
