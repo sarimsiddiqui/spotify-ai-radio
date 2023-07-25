@@ -48,7 +48,6 @@ pydantic==1.10.9
 Pygments==2.15.1
 python-dotenv==1.0.0
 PyYAML==6.0
-reactpy==1.0.1
 redis==4.5.5
 requests==2.31.0
 six==1.16.0
