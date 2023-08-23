@@ -24,7 +24,6 @@ TOKEN_INFO = "token_info"
 
 @app.route('/')
 def home():
-    initial()
     return render_template("home.html")
 
 #instrucitons to AI
@@ -52,22 +51,13 @@ def speechbot ():
         #print("audio file not found.")
     audio = generate(
         text = q.get(),
-        voice = Voices.from_api() [1],
+        voice = Voices.from_api() [2],
         
     )
     save (audio, 'static/audio.wav')
     
-def initial():
-    messages.append({"role": "system", "content": instructions})
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages)
-    reply = response["choices"][0]["message"]["content"]
-    messages.append({"role": "assistant", "content": reply})
-    q.put(reply)
-    speechbot()
 
-def queue(songs):
+async def queue(songs):
     try:
         token_info = get_token()
     except:
