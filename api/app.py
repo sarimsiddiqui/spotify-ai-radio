@@ -15,7 +15,7 @@ key = os.environ['API_KEY']
 openai.api_key = key
 set_api_key(os.environ['API_KEY_11'])
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="../templates", static_folder="../static")
  
 
 app.secret_key = os.environ['APP_SECRET_KEY']
@@ -43,18 +43,12 @@ def songarray (reply):
 q = Queue()
 messages = []
 
-# takes in the text and turns it into speech
-def speechbot ():
-    #try:
-        #os.remove('api/static/audio.wav')
-    #except:
-        #print("audio file not found.")
-    audio = generate(
-        text = q.get(),
-        voice = Voices.from_api() [2],
-        
+async def speechbot():
+    audio = await generate(
+        text=q.get(),
+        voice=Voices.from_api()[2],
     )
-    save (audio, 'static/audio.wav')
+    save(audio, 'static/audio.wav')
     
 
 async def queue(songs):
@@ -62,47 +56,46 @@ async def queue(songs):
         token_info = get_token()
     except:
         print("user not logged in")
-        return redirect(url_for("login", _external = False))
-    sp = spotipy.Spotify(auth=token_info['access_token']) 
+        return redirect(url_for("login", _external=False))
+
+    sp = spotipy.Spotify(auth=token_info['access_token'])
     for x in songs:
-        song_id=(sp.search(x, limit=1, type='track', market='ES') ['tracks']['items'][0]['uri'])
-        sp.add_to_queue(song_id, device_id=None)
-    speechbot()
-    return redirect(url_for('host', _external = True))
+        track = await sp.search(x, limit=1, type='track', market='ES')
+        if track['tracks']['items']:
+            song_id = track['tracks']['items'][0]['uri']
+            sp.add_to_queue(song_id, device_id=None)
+    await speechbot()
+    return redirect(url_for('host', _external=True))
 
 
 
 
 
-@app.route ('/hostfirst', methods = ['GET', 'POST'])
-def hostfirst():
+@app.route('/hostfirst', methods=['GET', 'POST'])
+async def hostfirst():
     if request.method == 'POST':
         text = request.form['text']
         processed_text = text.upper()
         message = processed_text
         messages.append({"role": "user", "content": message})
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo"
-            ,
+            model="gpt-3.5-turbo",
             messages=messages,
-            )
+        )
         reply = response["choices"][0]["message"]["content"]
         messages.append({"role": "assistant", "content": reply})
 
-        # get substring of message before array of songs and print
         try:
-            before = subString(reply, 0 ,reply.index('[') )
+            before = subString(reply, 0, reply.index('['))
             q.put(before)
-            songs = subString(reply,(reply.index('[')+1), reply.index(']') )
-            # Turn songs into array of strings
+            songs = subString(reply, (reply.index('[') + 1), reply.index(']'))
             songs_array = songarray(songs)
-            queue(songs_array)
-            stor = subString(reply, (reply.index(']')+1),(len(reply)+1))
+            await queue(songs_array)
+            stor = subString(reply, (reply.index(']') + 1), (len(reply) + 1))
             q.put(stor)
-            return redirect(url_for('host', _external = True))
+            return redirect(url_for('host', _external=True))
         except:
             return render_template('hostfirst.html')
-                
     else:
         audio_filename = 'audio.wav'
         response = make_response(render_template("hostfirst.html", audio_src=url_for('static', filename=audio_filename)))
